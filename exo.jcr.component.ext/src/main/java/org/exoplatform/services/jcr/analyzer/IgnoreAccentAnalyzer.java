@@ -17,14 +17,19 @@
  **************************************************************************/
 package org.exoplatform.services.jcr.analyzer;
 
+import java.io.IOException;
 import java.io.Reader;
 
 import org.apache.lucene.analysis.ASCIIFoldingFilter;
+import org.apache.lucene.analysis.cn.smart.SmartChineseAnalyzer;
 import org.apache.lucene.analysis.Analyzer;
 import org.apache.lucene.analysis.LowerCaseFilter;
 import org.apache.lucene.analysis.TokenStream;
 import org.apache.lucene.analysis.standard.StandardFilter;
+import org.apache.lucene.analysis.tokenattributes.CharTermAttribute;
 import org.apache.lucene.util.Version;
+import org.exoplatform.services.log.ExoLogger;
+import org.exoplatform.services.log.Log;
 
 /**
  * Created by The eXo Platform SARL
@@ -33,14 +38,30 @@ import org.apache.lucene.util.Version;
  * Jul 19, 2010
  */
 public final class IgnoreAccentAnalyzer extends Analyzer {
+	
+	private static final Log log = ExoLogger.getLogger(IgnoreAccentAnalyzer.class.getName());
 
   public TokenStream tokenStream(String fieldName, Reader reader) {
-    TokenStream result = new WhitespaceTokenizer(Version.LUCENE_35, reader);
+    /*TokenStream result = new WhitespaceTokenizer(Version.LUCENE_35, reader);
     result = new StandardFilter(Version.LUCENE_35, result);
     result = new UnescapeHTMLFilter(result);
     result = new IgnoreSentencesEndFilter(result);
     result = new LowerCaseFilter(Version.LUCENE_35, result);
     result = new ASCIIFoldingFilter(result);
+    */
+	log.info("fieldName " + fieldName);
+	SmartChineseAnalyzer ss = new SmartChineseAnalyzer(Version.LUCENE_36);
+	TokenStream result = ss.tokenStream(fieldName, reader);
+	/*
+    try {
+		while (result.incrementToken()) {
+		    log.info(result.getAttribute(CharTermAttribute.class));
+		}
+	} catch (IOException e) {
+		e.printStackTrace();
+	}
+	*/
+	ss.close();
     return result;
   }
 }
