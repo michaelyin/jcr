@@ -56,6 +56,11 @@
       </exclusions>
     </dependency>
     <dependency>
+			<groupId>org.apache.lucene</groupId>
+			<artifactId>lucene-smartcn</artifactId>
+			<version>3.6.2</version>
+	</dependency>
+    <dependency>
       <groupId>org.exoplatform.ws</groupId>
       <artifactId>exo.ws.rest.ext</artifactId>
     </dependency>
